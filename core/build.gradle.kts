@@ -48,6 +48,13 @@ tasks.register<JavaExec>("intentTests") {
     classpath = sourceSets["test"].runtimeClasspath
 }
 
+tasks.register<JavaExec>("datasetTests") {
+    group = "verification"
+    description = "Dataset, transform, dedup and export tests."
+    mainClass.set("dev.datakhoj.core.DatasetTestMain")
+    classpath = sourceSets["test"].runtimeClasspath
+}
+
 tasks.register<JavaExec>("aiTests") {
     group = "verification"
     description = "On-device AI layer: fallback, resilience, LLM output safety."

@@ -27,6 +27,9 @@ jobs:
       - name: On-device AI layer tests
         run: ./gradlew :core:aiTests
 
+      - name: Dataset / transform / dedup / export tests
+        run: ./gradlew :core:datasetTests
+
       - name: Cross-engine conformance
         run: ./gradlew :core:conformance
 

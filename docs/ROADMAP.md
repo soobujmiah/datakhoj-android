@@ -1,56 +1,131 @@
 # Roadmap
 
-## Phase 0 — Engine foundation ✅ COMPLETE
+Reflects the **actual** implementation state (§48). Updated after every phase.
 
-- [x] `:core` as a pure-JVM module (builds/tests without Android SDK)
+Legend: ✅ done & tested · 🟡 partial · ⬜ not started
+
+---
+
+## Phase 0 — Engine foundation ✅
+
+- [x] `:core` pure JVM — builds and tests without the Android SDK
 - [x] JobSpec v1 parse / serialise / round-trip
 - [x] Extractor on Jsoup — container scoping, `@attr`, URL absolutisation
-- [x] FieldTypes coercion — 10 types, Bengali/Arabic digits
-- [x] Typed errors with sysexits codes; zero rows is an error, never a silent success
+- [x] FieldTypes — 10 types, Bengali/Arabic digits
+- [x] Typed errors, sysexits codes; zero rows is an error, never silent success
 - [x] Provider SPI + registry + `GenericHtmlProvider`
-- [x] **Cross-engine conformance: 5/5 byte-identical to Python**
-- [x] Provider/coercion unit tests: 32/32
-- [x] Gradle scaffolding, CI
+- [x] Smart search — intent parsing, EN + Bengali, offline
+- [x] Optional AI layer with NPU→GPU→CPU→deterministic fallback
+- [x] **Cross-engine conformance 5/5, byte-identical to Python**
+- [x] CI, signing, repository audit → [`AUDIT-PHASE0.md`](AUDIT-PHASE0.md)
 
-## Phase 1 — Make it run on the device
-- [ ] `OkHttpClient` implementation of `HttpClient`
-- [ ] `Robots.kt` — fetch, cache, `Crawl-delay`
-- [ ] Pagination: `next_link`, `url_pattern`
-- [ ] Room schema from `spec/db-v1.sql`
-- [ ] WorkManager job runner + foreground notification, pause/resume
-- [ ] Exporters: CSV, JSON, XLSX, YAML, MD, HTML
-- [ ] Storage Access Framework output (no hardcoded `/sdcard`)
-- [ ] **Milestone: a job runs end-to-end on the Redmi Turbo 4 Pro**
+## Phase 1 — Dataset, Transform, Dedup, Export ✅
 
-## Phase 2 — The UI
-- [ ] Compose shell, jade/saffron Material 3 theme, dark mode
-- [ ] Home: search-first, recent jobs
-- [ ] Results: grouped by kind, filter, sort, preview
-- [ ] Data table: virtualised, inline edit, per-cell error state
-- [ ] Export sheet with format picker
-- [ ] **WebView tap-to-select picker** — the flagship feature
+The keystone. Nothing downstream could exist before it.
 
-## Phase 3 — Providers (the "any data" layer)
-- [ ] Web search, generic HTML catalogue
-- [ ] Audio, video, subtitles
-- [ ] Documents, books, academic papers
-- [ ] Datasets, APIs
-- [ ] Torrent indexes (magnet + `.torrent`)
-- [ ] Software/package registries, code search
-- [ ] Contact/OSINT lookup (opt-in, see `docs/LEGAL.md`)
-- [ ] User-installable provider packs (JSON, importable)
+- [x] `Dataset` / `Record` / `Schema` / `FieldDef` — immutable, typed
+- [x] Raw-value preservation — never silently destroy data
+- [x] `PartialInfo` — partial completion is first-class
+- [x] 13 transforms + reporting pipeline
+- [x] Conservative normalisation — non-phones and non-emails left untouched
+- [x] Dedup: exact / likely / unique, measured thresholds, never auto-deletes
+- [x] `ExportWriter` SPI + 8 writers (CSV, TSV, JSON, NDJSON, YAML, MD, HTML, SQL)
+- [x] Export quality: UTF-8 BOM, Bengali, CSV-injection defusal, XSS/SQL escaping
+- [x] **76 new tests; 175 total; parity intact**
+- [x] Docs: DATA_MODEL, DATA_PIPELINE, EXPORT, TRANSFORM, ARCHITECTURE, JOBSPEC
 
-## Phase 4 — Download system
-- [ ] Queue with pause/resume/retry, parallel segments
-- [ ] Integrity: size + checksum verification
-- [ ] Format conversion hooks
-- [ ] Magnet handoff to a torrent client
-- [ ] Batch download from a result set
+## Phase 2 — Persistence & job execution ⬜
 
-## Phase 5 — Advanced
-- [ ] WebView JS rendering for SPA sites
-- [ ] Auto-detect: JSON-LD, microdata, OpenGraph, `<table>` inference
-- [ ] Scheduled recurring jobs + change detection
-- [ ] SQLCipher encrypted database
-- [ ] Full Bengali localisation
-- [ ] `.dkjob` share/import, phone↔desktop round-trip
+- [ ] Room schema — Jobs, JobRuns, Datasets, Records, Exports
+- [ ] Migrations that never delete user data
+- [ ] WorkManager runner, foreground notification
+- [ ] Pause / resume / cancel / retry
+- [ ] Process-death recovery
+- [ ] JobRun state machine incl. `partially_completed`
+- [ ] Job history screen
+
+## Phase 3 — Dataset UI ⬜
+
+- [ ] Datasets list, rename, delete, duplicate, merge
+- [ ] Virtualised record table (10k+ rows, paged — not all in Compose)
+- [ ] Search / filter / sort / select
+- [ ] Schema inspector, missing-value indicators
+- [ ] Transform UI with before/after preview
+- [ ] Dedup review screen
+- [ ] Pre-export preview (§32)
+
+## Phase 4 — Download manager ⬜
+
+- [ ] Queue, RetryPolicy, ResumeSupport, StorageResolver, IntegrityChecker
+- [ ] States: queued/downloading/paused/completed/failed/cancelled
+- [ ] Progress, speed, ETA
+- [ ] Safe filenames, duplicate handling, MIME detection
+- [ ] Downloads screen; history
+
+## Phase 5 — Export integration ⬜
+
+- [ ] SAF destination picker
+- [ ] XLSX writer (needs an Android library)
+- [ ] Export history: repeat, open, share, delete
+- [ ] Share sheet
+
+## Phase 6 — Extraction UX ⬜
+
+- [ ] WebView tap-to-select picker
+- [ ] Selector generation + live preview
+- [ ] Pagination execution (`next_link`, `url_pattern`)
+- [ ] Detail-page following
+- [ ] `render: js`
+
+## Phase 7 — Provider reliability ⬜
+
+- [ ] Health states: available / rate-limited / auth-required / blocked
+- [ ] Retry policy, backoff, non-retryable classification
+- [ ] Partial-result semantics surfaced in UI
+- [ ] Auth abstraction — credentials never in JobSpec, never in logs
+
+## Phase 8 — Diagnostics ⬜
+
+- [ ] Structured event store
+- [ ] Automatic redaction of tokens/cookies/keys
+- [ ] Diagnostic session + ZIP report
+- [ ] FACT / OBSERVATION / POSSIBLE CAUSE separation
+
+## Phase 9 — Security & privacy ⬜
+
+- [ ] Encrypted credential storage
+- [ ] Data deletion controls
+- [ ] Diagnostic consent; datasets never auto-exported into reports
+- [ ] Permission minimisation review
+
+## Phase 10 — Quality ⬜
+
+- [ ] Android instrumentation tests (insets, navigation, WebView)
+- [ ] Device tests on Redmi Turbo 4 Pro
+- [ ] Failure matrix: offline, 403, 429, invalid HTML, disk full, process death
+- [ ] Large dataset tests (10k+)
+- [ ] Performance profiling
+
+## Phase 11 — Optional future ⬜
+
+Only after the core is stable: AI-assisted extraction, more exporters
+(Parquet/XML/PDF), media processing, scheduling, more providers.
+
+---
+
+## Known gaps
+
+| Gap | Impact | Phase |
+|---|---|---|
+| No persistence | everything lost on process death | 2 |
+| UI is one screen | no navigation to datasets/downloads | 3 |
+| No downloads | media results can only be opened in a browser | 4 |
+| Insets not consumed | content can sit under the status bar | 3 |
+| `room`/`work`/`navigation` deps unused | APK weight, implies absent capability | 2 |
+| No XLSX | listed in docs, not yet implemented | 5 |
+
+## Constraint
+
+Dev sandbox has 2 GB RAM; Android builds need 4–8 GB and are OOM-killed
+locally. All Android verification runs on GitHub runners. `:core` work is
+verified locally in ~25 s — a further reason to keep logic out of `:app`.

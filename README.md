@@ -19,12 +19,18 @@ Search any kind of data, extract it into structure, export it in the format you 
 | Provider plug-in system | ✅ Working | registry + generic HTML provider tested |
 | **Smart search (auto source)** | ✅ Working | 33/33 intent tests, EN + Bengali |
 | On-device AI layer (NPU) | ✅ Interfaces + fallbacks | 29/29 incl. broken-model resilience |
-| Gradle / Android shell | 🟡 Scaffolded | not yet built on device |
-| Compose UI | ⬜ Not started | design in `docs/DESIGN.md` |
-| Download manager | ⬜ Not started | — |
-| WorkManager runner | ⬜ Not started | — |
+| **Dataset / Record / Schema** | ✅ Working | 76 tests — the keystone model |
+| **Transform (13 cleaners)** | ✅ Working | conservative, raw values preserved |
+| **Deduplication** | ✅ Working | exact/likely/unique, never auto-deletes |
+| **Export (8 formats)** | ✅ Working | CSV·TSV·JSON·NDJSON·YAML·MD·HTML·SQL |
+| Gradle / Android shell | 🟡 Scaffolded | signed APK builds in CI |
+| Compose UI | 🟡 One screen | search only; no navigation yet |
+| Persistence (Room) | ⬜ Phase 2 | nothing survives process death |
+| Download manager | ⬜ Phase 4 | — |
+| WorkManager runner | ⬜ Phase 2 | — |
 
-Everything marked ✅ was compiled and executed in CI, not just written.
+Everything marked ✅ was compiled and executed, not just written —
+**175 assertions across 5 suites**, all pure JVM, no emulator required.
 
 ---
 
@@ -138,7 +144,10 @@ Requires JDK 17 and Android SDK 35.
 
 | Doc | Contents |
 |---|---|
-| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Module layout, data flow, threading |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Module layout, data flow, the `:core`/`:app` rule |
+| [`docs/DATA_MODEL.md`](docs/DATA_MODEL.md) | Dataset, Record, Schema — why a CSV is not a dataset |
+| [`docs/DATA_PIPELINE.md`](docs/DATA_PIPELINE.md) | Discover → … → Export, with status per stage |
+| [`docs/TRANSFORM.md`](docs/TRANSFORM.md) | Cleaning and deduplication |
 | [`docs/SMART_SEARCH.md`](docs/SMART_SEARCH.md) | One search box → automatic source selection |
 | [`docs/NPU.md`](docs/NPU.md) | What the NPU does and does not accelerate |
 | [`docs/PROVIDERS.md`](docs/PROVIDERS.md) | Writing a new data source |
