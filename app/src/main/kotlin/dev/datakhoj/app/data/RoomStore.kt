@@ -65,7 +65,13 @@ abstract class DataKhojDatabase : RoomDatabase() {
     }
 }
 
-private fun <T> mapErrors(operation: String, block: () -> T): T =
+/**
+ * Translate storage failures into typed [RepositoryException]s.
+ *
+ * `inline` so the lambda can contain suspend calls — a non-inline function
+ * taking a plain `() -> T` cannot host them.
+ */
+private inline fun <T> mapErrors(operation: String, block: () -> T): T =
     try {
         block()
     } catch (e: RepositoryException) {
