@@ -32,6 +32,13 @@ tasks.register<JavaExec>("conformance") {
     args("${rootDir}/spec/conformance/cases")
 }
 
+tasks.register<JavaExec>("intentTests") {
+    group = "verification"
+    description = "Smart-search intent parser tests (offline)."
+    mainClass.set("dev.datakhoj.core.IntentTestMain")
+    classpath = sourceSets["test"].runtimeClasspath
+}
+
 tasks.register<JavaExec>("providerTests") {
     group = "verification"
     mainClass.set("dev.datakhoj.core.ProviderTestMain")

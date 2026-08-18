@@ -21,6 +21,9 @@ jobs:
       - name: Provider + coercion tests
         run: ./gradlew :core:providerTests
 
+      - name: Smart-search intent tests
+        run: ./gradlew :core:intentTests
+
       - name: Cross-engine conformance
         run: ./gradlew :core:conformance
 

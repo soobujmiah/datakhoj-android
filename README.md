@@ -17,6 +17,7 @@ Search any kind of data, extract it into structure, export it in the format you 
 | Field type coercion | ✅ Working | 32/32 unit tests |
 | JobSpec v1 parse/serialise | ✅ Working | round-trip tested |
 | Provider plug-in system | ✅ Working | registry + generic HTML provider tested |
+| **Smart search (auto source)** | ✅ Working | 33/33 intent tests, EN + Bengali |
 | Gradle / Android shell | 🟡 Scaffolded | not yet built on device |
 | Compose UI | ⬜ Not started | design in `docs/DESIGN.md` |
 | Download manager | ⬜ Not started | — |
@@ -137,6 +138,7 @@ Requires JDK 17 and Android SDK 35.
 | Doc | Contents |
 |---|---|
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Module layout, data flow, threading |
+| [`docs/SMART_SEARCH.md`](docs/SMART_SEARCH.md) | One search box → automatic source selection |
 | [`docs/PROVIDERS.md`](docs/PROVIDERS.md) | Writing a new data source |
 | [`docs/JOBSPEC.md`](docs/JOBSPEC.md) | `.dkjob` format reference |
 | [`docs/PARITY.md`](docs/PARITY.md) | How the two engines stay identical |
