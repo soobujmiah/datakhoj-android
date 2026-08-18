@@ -54,16 +54,31 @@ The keystone. Nothing downstream could exist before it.
 **Explicitly NOT done in Phase 1** (per instruction): Room, WorkManager,
 Downloads, UI, Diagnostics.
 
-## Phase 2 — Persistence & job execution ⬜
+## Phase 2a — Room persistence ✅
 
-Boundary already defined in Phase 1, so this is additive: implement the
-interfaces, do not change the domain.
+Additive, exactly as the Phase 1 boundary intended: `:core` was not modified
+and still imports no Android type.
 
-- [ ] `RoomDatasetRepository` / `RoomJobRepository` / `RoomExportHistoryRepository`
-- [ ] Run the Phase 1 contract tests against Room — must match InMemory exactly
-- [ ] Re-add `androidx.room` + `androidx.work` dependencies (removed in Phase 1)
-- [ ] Room schema — Jobs, JobRuns, Datasets, Records, Exports
-- [ ] Migrations that never delete user data
+- [x] `RoomDatasetRepository` / `RoomJobRepository` / `RoomExportHistoryRepository`
+- [x] `RepositoryContract` (85 assertions) in `:core/main`, run against **both**
+      InMemory (JVM) and Room (emulator) — one definition of correct
+- [x] Room schema: datasets, records, jobs, job_runs, export_history
+- [x] Records as rows, not a JSON blob → LIMIT/OFFSET paging for 10k+ datasets
+- [x] `searchBlob` column for indexed LIKE search
+- [x] `@Transaction` replace + 500-row chunking under SQLite's variable limit
+- [x] No `fallbackToDestructiveMigration` — user data is never dropped silently
+- [x] SQL failures mapped to typed `RepositoryException`s
+- [x] `verifyIntegrity()` via `PRAGMA integrity_check`
+- [x] **Emulator CI (API 34, KVM)** — real SQLite, real Room codegen
+- [x] Device-level tests: survives DB reopen, FK cascade, 5000-row paging
+
+## Phase 2b — Job execution ⬜
+
+- [ ] WorkManager runner, foreground notification
+- [ ] Pause / resume / cancel / retry
+- [ ] Process-death recovery using the checkpoint API from Phase 1
+- [ ] JobRun state machine incl. `partially_completed`
+- [ ] Migrations for schema v2 when the first change lands
 - [ ] WorkManager runner, foreground notification
 - [ ] Pause / resume / cancel / retry
 - [ ] Process-death recovery
@@ -139,11 +154,24 @@ Only after the core is stable: AI-assisted extraction, more exporters
 
 ---
 
+## What still needs a physical device
+
+Everything below is verified on an API 34 x86_64 emulator. These remain
+genuinely unverifiable without the Redmi Turbo 4 Pro:
+
+| Needs hardware | Why |
+|---|---|
+| Status bar / cutout insets | emulator cutout differs from a real punch-hole |
+| HyperOS 2 behaviour | Xiaomi's fork differs from AOSP |
+| Real-world scroll performance | Adreno 825 vs SwiftShader software rendering |
+| Battery during long crawls | no meaningful emulator equivalent |
+| NPU / QNN acceleration | emulator has no Hexagon DSP |
+
 ## Known gaps
 
 | Gap | Impact | Phase |
 |---|---|---|
-| No persistence | everything lost on process death | 2 |
+
 | UI is one screen | no navigation to datasets/downloads | 3 |
 | No downloads | media results can only be opened in a browser | 4 |
 | Insets not consumed | content can sit under the status bar | 3 |
@@ -152,15 +180,19 @@ Only after the core is stable: AI-assisted extraction, more exporters
 
 ## Verified state — 2026-08-18
 
-| Suite | Assertions |
-|---|---|
-| Cross-engine conformance | 5 |
-| Provider + coercion | 32 |
-| Intent parser | 33 |
-| AI layer | 29 |
-| Dataset / transform / dedup / export | 76 |
-| Export + persistence contracts | 56 |
-| **Total** | **231** |
+| Suite | Assertions | Where |
+|---|---|---|
+| Cross-engine conformance | 5 | JVM |
+| Provider + coercion | 32 | JVM |
+| Intent parser | 33 | JVM |
+| AI layer | 29 | JVM |
+| Dataset / transform / dedup / export | 76 | JVM |
+| Export + persistence contracts | 56 | JVM |
+| Provider pagination | 10 | JVM |
+| Repository contract (InMemory) | 85 | JVM |
+| **JVM total** | **326** | |
+| Repository contract (Room) | 85 | **emulator** |
+| Room device tests | 4 | **emulator** |
 
 Python parity: **5 cases, 0 divergent.** CI: core tests, parity job and debug
 APK build all green. No release or tag published (§47).

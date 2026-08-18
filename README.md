@@ -27,12 +27,12 @@ Search any kind of data, extract it into structure, export it in the format you 
 | **Persistence boundary** | ✅ Working | domain stays storage-independent |
 | Gradle / Android shell | 🟡 Scaffolded | signed APK builds in CI |
 | Compose UI | 🟡 One screen | search only; no navigation yet |
-| Persistence (Room) | ⬜ Phase 2 | nothing survives process death |
+| **Persistence (Room)** | ✅ Working | 85 contract + 4 device tests on emulator |
 | Download manager | ⬜ Phase 4 | — |
-| WorkManager runner | ⬜ Phase 2 | — |
+| WorkManager runner | ⬜ Phase 2b | — |
 
 Everything marked ✅ was compiled and executed, not just written —
-**231 assertions across 6 suites**, all pure JVM, no emulator required.
+**326 JVM assertions + 89 on-emulator**, all pure JVM, no emulator required.
 
 ---
 
