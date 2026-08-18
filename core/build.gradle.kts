@@ -39,6 +39,13 @@ tasks.register<JavaExec>("intentTests") {
     classpath = sourceSets["test"].runtimeClasspath
 }
 
+tasks.register<JavaExec>("aiTests") {
+    group = "verification"
+    description = "On-device AI layer: fallback, resilience, LLM output safety."
+    mainClass.set("dev.datakhoj.core.AiTestMain")
+    classpath = sourceSets["test"].runtimeClasspath
+}
+
 tasks.register<JavaExec>("providerTests") {
     group = "verification"
     mainClass.set("dev.datakhoj.core.ProviderTestMain")

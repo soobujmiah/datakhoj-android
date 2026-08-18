@@ -18,6 +18,7 @@ Search any kind of data, extract it into structure, export it in the format you 
 | JobSpec v1 parse/serialise | ✅ Working | round-trip tested |
 | Provider plug-in system | ✅ Working | registry + generic HTML provider tested |
 | **Smart search (auto source)** | ✅ Working | 33/33 intent tests, EN + Bengali |
+| On-device AI layer (NPU) | ✅ Interfaces + fallbacks | 29/29 incl. broken-model resilience |
 | Gradle / Android shell | 🟡 Scaffolded | not yet built on device |
 | Compose UI | ⬜ Not started | design in `docs/DESIGN.md` |
 | Download manager | ⬜ Not started | — |
@@ -139,6 +140,7 @@ Requires JDK 17 and Android SDK 35.
 |---|---|
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Module layout, data flow, threading |
 | [`docs/SMART_SEARCH.md`](docs/SMART_SEARCH.md) | One search box → automatic source selection |
+| [`docs/NPU.md`](docs/NPU.md) | What the NPU does and does not accelerate |
 | [`docs/PROVIDERS.md`](docs/PROVIDERS.md) | Writing a new data source |
 | [`docs/JOBSPEC.md`](docs/JOBSPEC.md) | `.dkjob` format reference |
 | [`docs/PARITY.md`](docs/PARITY.md) | How the two engines stay identical |

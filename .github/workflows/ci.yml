@@ -24,6 +24,9 @@ jobs:
       - name: Smart-search intent tests
         run: ./gradlew :core:intentTests
 
+      - name: On-device AI layer tests
+        run: ./gradlew :core:aiTests
+
       - name: Cross-engine conformance
         run: ./gradlew :core:conformance
 
