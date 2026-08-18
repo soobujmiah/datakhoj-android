@@ -8,11 +8,19 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
+// Without this, Kotlin defaults to jvmTarget 1.8 and the build fails with
+// "Inconsistent JVM-target compatibility" against Java 17.
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions.jvmTarget = "17"
+}
+
 dependencies {
     api("org.jsoup:jsoup:1.17.2")
-    api("org.json:json:20240303")
+    // org.json is part of the Android platform — compile against it, never bundle it.
+    compileOnly("org.json:json:20240303")
     api("com.squareup.okhttp3:okhttp:4.12.0")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+    testImplementation("org.json:json:20240303")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
 }

@@ -1,0 +1,3 @@
+-keep class dev.datakhoj.core.** { *; }
+-dontwarn org.jsoup.**
+-dontwarn okhttp3.**

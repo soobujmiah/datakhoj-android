@@ -13,3 +13,9 @@ kotlin-results.json
 python-results.json
 *.jks
 *.keystore
+keystore*
+local.properties
+keystore/
+keystore.properties
+local.properties
+dist/
