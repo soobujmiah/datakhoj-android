@@ -87,7 +87,8 @@ class SearchViewModel : ViewModel() {
         }
     }
 
-    fun setLimit(n: Int) {
+    /** Named changeLimit, not setLimit: `var limit` already generates setLimit(Int). */
+    fun changeLimit(n: Int) {
         limit = n
         if (lastQuery.isNotBlank()) run()
     }
@@ -215,7 +216,7 @@ fun SearchScreen(vm: SearchViewModel = viewModel()) {
                                 else MaterialTheme.colorScheme.surfaceVariant,
                                 RoundedCornerShape(999.dp),
                             )
-                            .clickable(enabled = !vm.busy) { vm.setLimit(n) }
+                            .clickable(enabled = !vm.busy) { vm.changeLimit(n) }
                             .padding(horizontal = 12.dp, vertical = 6.dp),
                     ) {
                         Text(
