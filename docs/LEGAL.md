@@ -81,5 +81,15 @@ original logo, open-licensed fonts. See `docs/DESIGN.md`.
 
 ## Project licence
 
-MIT © soobujmiah. Provided **as is**, without warranty. The author accepts no
-liability for how the tool is used.
+**AGPL-3.0-or-later** © 2026 soobujmiah. See [`../LICENSE`](../LICENSE) and
+[`../COPYRIGHT.md`](../COPYRIGHT.md).
+
+Moved from MIT deliberately: MIT would let anyone close the source, rebrand,
+and sell this. AGPL requires derivatives to stay open, including when deployed
+as a network service (§13).
+
+Trademarks ("DataKhoj", the logo, `dev.datakhoj.app`) are **not** licensed.
+Forks must rename.
+
+Provided **as is**, without warranty (§15–16). The author accepts no liability
+for how the tool is used.

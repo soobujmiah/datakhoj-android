@@ -158,6 +158,32 @@ See [`docs/LEGAL.md`](docs/LEGAL.md) for what that means in practice.
 
 ---
 
-## Licence
+## Licence — AGPL-3.0-or-later
 
-MIT © soobujmiah. Third-party licences in [`docs/LEGAL.md`](docs/LEGAL.md).
+Copyright © 2026 soobujmiah. See [`LICENSE`](LICENSE) and
+[`COPYRIGHT.md`](COPYRIGHT.md).
+
+**This is copyleft, not permissive.** The source is public so you can read it,
+learn from it, and build on it — not so it can be taken closed-source.
+
+| You may | You must |
+|---|---|
+| Use it privately, for anything | Keep the copyright notices |
+| Study and modify it | Release your changes under AGPL-3.0 |
+| Redistribute, even commercially | State what you changed |
+| Fork it | **Rename it** — see below |
+
+**§13 (network clause):** run a modified version as a hosted service and you
+must offer its full source to that service's users. This is what MIT does not
+do, and the reason this project is not MIT.
+
+### Trademark — not licensed
+
+The AGPL covers code, not names. **"DataKhoj"**, **ডেটাখোঁজ**, the jade
+magnifier logo, and the app ID `dev.datakhoj.app` are trademarks and are
+excluded from the licence grant.
+
+Fork the code, not the identity. If you fork, rename. Same rule the Linux
+kernel, Firefox, and Chromium use.
+
+Third-party licences: [`docs/LEGAL.md`](docs/LEGAL.md).

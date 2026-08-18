@@ -1,3 +1,4 @@
+// DataKhoj — Copyright (C) 2026 soobujmiah — AGPL-3.0-or-later. See LICENSE.
 plugins {
     id("org.jetbrains.kotlin.jvm")
     `java-library`
