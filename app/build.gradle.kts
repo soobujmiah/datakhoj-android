@@ -22,8 +22,8 @@ android {
         // Target device: Redmi Turbo 4 Pro — Android 15 (API 35), HyperOS 2,
         // Snapdragon 8s Gen 4 (SM8735), Adreno 825, arm64-v8a.
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 2
+        versionName = "0.2.0"
         ndk { abiFilters += listOf("arm64-v8a") }
     }
 
@@ -45,7 +45,12 @@ android {
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
-        debug { applicationIdSuffix = ".debug" }
+        debug {
+            // Suffixed so debug and release can be installed side by side on
+            // the same device for comparison.
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
+        }
     }
 
     compileOptions {
