@@ -51,6 +51,13 @@ tasks.register<JavaExec>("intentTests") {
     classpath = sourceSets["test"].runtimeClasspath
 }
 
+tasks.register<JavaExec>("storeContractTests") {
+    group = "verification"
+    description = "Repository contract against InMemoryStore (Room runs the same suite on-device)."
+    mainClass.set("dev.datakhoj.core.StoreContractMain")
+    classpath = sourceSets["test"].runtimeClasspath
+}
+
 tasks.register<JavaExec>("paginationTests") {
     group = "verification"
     description = "Provider pagination — proves results are not capped at one page."

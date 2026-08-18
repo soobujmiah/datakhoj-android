@@ -4,6 +4,7 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
 }
 
 // Signing config is read from keystore.properties, which is gitignored.
@@ -24,6 +25,7 @@ android {
         targetSdk = 35
         versionCode = 2
         versionName = "0.2.0"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         ndk { abiFilters += listOf("arm64-v8a") }
     }
 
@@ -58,20 +60,35 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions { jvmTarget = "17" }
+    sourceSets["androidTest"].java.srcDir("src/androidTest/kotlin")
+    sourceSets["main"].java.srcDir("src/main/kotlin")
     buildFeatures { compose = true }
+    // Room exports its schema so migrations can be diffed in review.
+    ksp { arg("room.schemaLocation", "$projectDir/schemas") }
     composeOptions { kotlinCompilerExtensionVersion = "1.5.14" }
     packaging { resources.excludes += "/META-INF/{AL2.0,LGPL2.1}" }
 }
 
 // Dependencies are added when code actually uses them, not in anticipation.
-// Deferred until their phase: Room + WorkManager (Phase 2), navigation
-// (Phase 3), documentfile/SAF (Phase 5).
+// Deferred until their phase: WorkManager (Phase 2b), navigation (Phase 3),
+// documentfile/SAF (Phase 5).
 dependencies {
     implementation(project(":core"))
+
+    // Room — added in Phase 2 because app/data now uses it.
+    val room = "2.6.1"
+    implementation("androidx.room:room-runtime:$room")
+    implementation("androidx.room:room-ktx:$room")
+    ksp("androidx.room:room-compiler:$room")
     val composeBom = platform("androidx.compose:compose-bom:2024.09.02")
     implementation(composeBom)
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.activity:activity-compose:1.9.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
+
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test:runner:1.6.2")
+    androidTestImplementation("androidx.room:room-testing:$room")
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
 }

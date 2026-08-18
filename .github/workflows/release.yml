@@ -69,6 +69,9 @@ jobs:
       - name: Provider pagination tests
         run: ./gradlew :core:paginationTests
 
+      - name: Repository contract (InMemory)
+        run: ./gradlew :core:storeContractTests
+
       # ---- signing material, restored just in time ----
       - name: Restore keystore
         env:
