@@ -19,10 +19,20 @@ Legend: ✅ done & tested · 🟡 partial · ⬜ not started
 - [x] **Cross-engine conformance 5/5, byte-identical to Python**
 - [x] CI, signing, repository audit → [`AUDIT-PHASE0.md`](AUDIT-PHASE0.md)
 
-## Phase 1 — Dataset, Transform, Dedup, Export ✅
+## Phase 1 — Contracts, Dataset, Transform, Dedup, Export ✅
 
 The keystone. Nothing downstream could exist before it.
 
+**Contracts (defined before the implementations that depend on them):**
+- [x] `ExportRequest → ExportEngine → ExportWriter → ExportResult`
+- [x] `ExportRequest.validate()` — fails before writing bytes, not halfway
+- [x] Persistence boundary: `DatasetRepository`, `JobRepository`,
+      `ExportHistoryRepository`, `DataKhojStore`
+- [x] `InMemoryStore` reference implementation — defines the semantics Room
+      must match in Phase 2
+- [x] Test asserts the domain imports no Room, Android or SQL types
+
+**Data:**
 - [x] `Dataset` / `Record` / `Schema` / `FieldDef` — immutable, typed
 - [x] Raw-value preservation — never silently destroy data
 - [x] `PartialInfo` — partial completion is first-class
@@ -31,11 +41,27 @@ The keystone. Nothing downstream could exist before it.
 - [x] Dedup: exact / likely / unique, measured thresholds, never auto-deletes
 - [x] `ExportWriter` SPI + 8 writers (CSV, TSV, JSON, NDJSON, YAML, MD, HTML, SQL)
 - [x] Export quality: UTF-8 BOM, Bengali, CSV-injection defusal, XSS/SQL escaping
-- [x] **76 new tests; 175 total; parity intact**
-- [x] Docs: DATA_MODEL, DATA_PIPELINE, EXPORT, TRANSFORM, ARCHITECTURE, JOBSPEC
+
+**Hygiene:**
+- [x] Removed 6 unused dependencies (Room, WorkManager, navigation,
+      documentfile, material-icons-extended) — added back in their own phase
+- [x] Swapped 6 extended icons for core Material icons
+- [x] All documentation links verified — 0 dead
+- [x] **132 new tests; 231 total; Python parity re-verified 5/5**
+- [x] Docs: DATA_MODEL, DATA_PIPELINE, EXPORT, TRANSFORM, PERSISTENCE,
+      ARCHITECTURE, JOBSPEC, AUDIT-PHASE0
+
+**Explicitly NOT done in Phase 1** (per instruction): Room, WorkManager,
+Downloads, UI, Diagnostics.
 
 ## Phase 2 — Persistence & job execution ⬜
 
+Boundary already defined in Phase 1, so this is additive: implement the
+interfaces, do not change the domain.
+
+- [ ] `RoomDatasetRepository` / `RoomJobRepository` / `RoomExportHistoryRepository`
+- [ ] Run the Phase 1 contract tests against Room — must match InMemory exactly
+- [ ] Re-add `androidx.room` + `androidx.work` dependencies (removed in Phase 1)
 - [ ] Room schema — Jobs, JobRuns, Datasets, Records, Exports
 - [ ] Migrations that never delete user data
 - [ ] WorkManager runner, foreground notification
@@ -121,8 +147,23 @@ Only after the core is stable: AI-assisted extraction, more exporters
 | UI is one screen | no navigation to datasets/downloads | 3 |
 | No downloads | media results can only be opened in a browser | 4 |
 | Insets not consumed | content can sit under the status bar | 3 |
-| `room`/`work`/`navigation` deps unused | APK weight, implies absent capability | 2 |
-| No XLSX | listed in docs, not yet implemented | 5 |
+
+| No XLSX | contract supports it; writer needs an Android library | 5 |
+
+## Verified state — 2026-08-18
+
+| Suite | Assertions |
+|---|---|
+| Cross-engine conformance | 5 |
+| Provider + coercion | 32 |
+| Intent parser | 33 |
+| AI layer | 29 |
+| Dataset / transform / dedup / export | 76 |
+| Export + persistence contracts | 56 |
+| **Total** | **231** |
+
+Python parity: **5 cases, 0 divergent.** CI: core tests, parity job and debug
+APK build all green. No release or tag published (§47).
 
 ## Constraint
 

@@ -23,6 +23,8 @@ Search any kind of data, extract it into structure, export it in the format you 
 | **Transform (13 cleaners)** | ✅ Working | conservative, raw values preserved |
 | **Deduplication** | ✅ Working | exact/likely/unique, never auto-deletes |
 | **Export (8 formats)** | ✅ Working | CSV·TSV·JSON·NDJSON·YAML·MD·HTML·SQL |
+| **Export contract** | ✅ Working | ExportRequest→Engine→Writer→Result, validated |
+| **Persistence boundary** | ✅ Working | domain stays storage-independent |
 | Gradle / Android shell | 🟡 Scaffolded | signed APK builds in CI |
 | Compose UI | 🟡 One screen | search only; no navigation yet |
 | Persistence (Room) | ⬜ Phase 2 | nothing survives process death |
@@ -30,7 +32,7 @@ Search any kind of data, extract it into structure, export it in the format you 
 | WorkManager runner | ⬜ Phase 2 | — |
 
 Everything marked ✅ was compiled and executed, not just written —
-**175 assertions across 5 suites**, all pure JVM, no emulator required.
+**231 assertions across 6 suites**, all pure JVM, no emulator required.
 
 ---
 
@@ -148,6 +150,7 @@ Requires JDK 17 and Android SDK 35.
 | [`docs/DATA_MODEL.md`](docs/DATA_MODEL.md) | Dataset, Record, Schema — why a CSV is not a dataset |
 | [`docs/DATA_PIPELINE.md`](docs/DATA_PIPELINE.md) | Discover → … → Export, with status per stage |
 | [`docs/TRANSFORM.md`](docs/TRANSFORM.md) | Cleaning and deduplication |
+| [`docs/PERSISTENCE.md`](docs/PERSISTENCE.md) | Repository boundary; why it precedes Room |
 | [`docs/SMART_SEARCH.md`](docs/SMART_SEARCH.md) | One search box → automatic source selection |
 | [`docs/NPU.md`](docs/NPU.md) | What the NPU does and does not accelerate |
 | [`docs/PROVIDERS.md`](docs/PROVIDERS.md) | Writing a new data source |

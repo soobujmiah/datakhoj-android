@@ -30,6 +30,9 @@ jobs:
       - name: Dataset / transform / dedup / export tests
         run: ./gradlew :core:datasetTests
 
+      - name: Export + persistence contract tests
+        run: ./gradlew :core:contractTests
+
       - name: Cross-engine conformance
         run: ./gradlew :core:conformance
 

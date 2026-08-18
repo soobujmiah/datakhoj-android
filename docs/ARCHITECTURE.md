@@ -31,6 +31,7 @@ user-chosen folder needs SAF. So `ExportWriter` takes an `OutputStream`.
 ├── transform/   13 cleaning transforms + pipeline
 ├── dedup/       exact / likely / unique classification
 ├── export/      ExportWriter SPI + 8 writers
+├── repository/  persistence boundary — keeps the domain storage-free
 ├── provider/    SearchProvider SPI, registry, generic HTML
 ├── intent/      IntentParser, SmartSearch, QueryIntent
 └── ai/          optional NPU layer (never a dependency)
@@ -97,7 +98,8 @@ all 5 conformance cases still pass.
 | Intent parser | 33 | <1 s |
 | AI layer | 29 | <1 s |
 | Dataset / transform / dedup / export | 76 | <1 s |
-| **Total** | **175** | **~25 s incl. compile** |
+| Export + persistence contracts | 56 | <1 s |
+| **Total** | **231** | **~30 s incl. compile** |
 
 All pure JVM. No emulator, no network, no device.
 

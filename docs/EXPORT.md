@@ -2,9 +2,44 @@
 
 Dataset-first and extensible (§13, §14, §39).
 
+## The contract
+
 ```
-Dataset → ExportRequest → ExportEngine → ExportWriter → bytes
+ExportRequest → ExportEngine → ExportWriter → ExportResult
 ```
+
+`ExportRequest` makes an export a **first-class value** rather than four loose
+parameters. That is what later phases need:
+
+| Phase | Requires a request object because |
+|---|---|
+| 2 — WorkManager | a queued export must be serialisable and replayable |
+| 3 — preview UI | the UI validates and describes an export before running it |
+| 5 — export history | "repeat this export" = re-submitting a stored request |
+
+```kotlin
+val request = ExportRequest(
+    dataset = dataset,
+    formatId = "csv",
+    options = ExportOptions(fields = listOf("name", "email")),
+    filenameOverride = null,
+)
+
+val v = request.validate()          // check BEFORE writing any bytes
+if (!v.isValid) showError(v.summary())
+if (v.hasWarnings) showWarning(v.summary())
+
+request.describe()                  // "3 record(s) × 2 field(s) → CSV"
+
+val result: ExportResult = ExportEngine.submit(request, outputStream)
+```
+
+**Validation happens before execution**, so a bad export fails cleanly instead
+of leaving a half-written file. Problems block; warnings (a partial dataset, an
+unknown field name) inform but allow.
+
+The request carries **no destination**. Where bytes go is an Android concern
+(SAF `Uri`); how they are formatted is pure logic.
 
 ## Formats
 

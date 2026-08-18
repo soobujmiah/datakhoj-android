@@ -64,6 +64,9 @@ jobs:
       - name: Dataset / transform / dedup / export tests
         run: ./gradlew :core:datasetTests
 
+      - name: Export + persistence contract tests
+        run: ./gradlew :core:contractTests
+
       # ---- signing material, restored just in time ----
       - name: Restore keystore
         if: ${{ github.event.inputs.build_type != 'debug' }}

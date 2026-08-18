@@ -27,6 +27,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+// Core Material icons only — material-icons-extended (~40 MB) is not
+// worth six glyphs. Swap back only if a genuinely unique icon is needed.
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -116,7 +118,7 @@ fun SearchScreen(vm: SearchViewModel = viewModel()) {
                 Spacer(Modifier.height(20.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        Icons.Default.TravelExplore, null,
+                        Icons.Default.Search, null,
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(30.dp),
                     )
@@ -174,7 +176,7 @@ fun SearchScreen(vm: SearchViewModel = viewModel()) {
                     Column(Modifier.padding(14.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
-                                Icons.Default.AutoAwesome, null,
+                                Icons.Default.Info, null,
                                 modifier = Modifier.size(16.dp),
                                 tint = MaterialTheme.colorScheme.onPrimaryContainer,
                             )
@@ -211,7 +213,7 @@ fun SearchScreen(vm: SearchViewModel = viewModel()) {
                     Box(Modifier.fillMaxWidth().padding(32.dp), Alignment.Center) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(
-                                Icons.Default.ErrorOutline, null,
+                                Icons.Default.Warning, null,
                                 tint = MaterialTheme.colorScheme.error,
                                 modifier = Modifier.size(36.dp),
                             )
@@ -321,9 +323,9 @@ private fun EmptyState() {
         )
         Spacer(Modifier.height(10.dp))
         listOf(
-            "arijit singh mp3" to Icons.Default.MusicNote,
-            "python book pdf" to Icons.Default.MenuBook,
-            "৫০০ গান" to Icons.Default.Translate,
+            "arijit singh mp3" to Icons.Default.PlayArrow,
+            "python book pdf" to Icons.Default.List,
+            "৫০০ গান" to Icons.Default.Star,
             "laptop prices from daraz.com.bd" to Icons.Default.ShoppingCart,
         ).forEach { (t, icon) ->
             Row(

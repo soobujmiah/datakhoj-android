@@ -51,6 +51,13 @@ tasks.register<JavaExec>("intentTests") {
     classpath = sourceSets["test"].runtimeClasspath
 }
 
+tasks.register<JavaExec>("contractTests") {
+    group = "verification"
+    description = "Export contract and persistence boundary tests."
+    mainClass.set("dev.datakhoj.core.ContractTestMain")
+    classpath = sourceSets["test"].runtimeClasspath
+}
+
 tasks.register<JavaExec>("datasetTests") {
     group = "verification"
     description = "Dataset, transform, dedup and export tests."

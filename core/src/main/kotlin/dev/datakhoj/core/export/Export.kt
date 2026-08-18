@@ -146,7 +146,14 @@ private fun OutputStream.bufferedWriter(cs: java.nio.charset.Charset) =
     java.io.BufferedWriter(java.io.OutputStreamWriter(this, cs))
 
 /**
- * The registry. Formats are looked up, never hardcoded into callers.
+ * The registry and execution point for the export contract.
+ *
+ * ```
+ * ExportRequest → ExportEngine → ExportWriter → ExportResult
+ * ```
+ *
+ * Formats are looked up by id, never hardcoded into callers, so a new writer
+ * is registered rather than wired in (§39).
  */
 object ExportEngine {
     private val writers = linkedMapOf<String, ExportWriter>()
@@ -169,16 +176,42 @@ object ExportEngine {
     /** Formats this build can actually produce (XLSX needs the Android module). */
     fun isSupported(formatId: String) = writers.containsKey(formatId.lowercase())
 
+    /**
+     * Execute an [ExportRequest]. The primary entry point.
+     *
+     * The request is validated first, so a bad export fails before a single
+     * byte is written rather than leaving a truncated file behind.
+     *
+     * @param out where the bytes go. Supplied by the caller because the
+     *   destination is a platform concern (SAF `Uri` on Android) while
+     *   formatting is pure logic.
+     */
+    fun submit(request: ExportRequest, out: OutputStream): ExportResult {
+        val validation = request.validate()
+        if (!validation.isValid) {
+            throw ExportException(validation.problems.joinToString("; "))
+        }
+        val writer = writerFor(request.formatId)
+            ?: throw ExportException("No writer for '${request.formatId}'.")
+        val result = writer.write(request.dataset, out, request.options)
+        return request.filenameOverride
+            ?.let { result.copy(suggestedFilename = it) }
+            ?: result
+    }
+
+    /**
+     * Convenience overload that builds the request for you.
+     *
+     * Prefer [submit] where the request needs to be validated, described,
+     * queued or logged first.
+     */
     fun export(
         dataset: Dataset,
         formatId: String,
         out: OutputStream,
         options: ExportOptions = ExportOptions(),
-    ): ExportResult {
-        val w = writerFor(formatId)
-            ?: throw IllegalArgumentException(
-                "No writer for '$formatId'. Available: ${available().joinToString { it.id }}"
-            )
-        return w.write(dataset, out, options)
-    }
+    ): ExportResult = submit(ExportRequest(dataset, formatId, options), out)
 }
+
+/** Raised when an export cannot be performed. Carries a user-facing message. */
+class ExportException(message: String) : Exception(message)
