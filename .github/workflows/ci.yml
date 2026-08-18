@@ -33,10 +33,19 @@ jobs:
       - name: Cross-engine conformance
         run: ./gradlew :core:conformance
 
+      - name: Confirm conformance output exists
+        run: |
+          if [ ! -f kotlin-results.json ]; then
+            echo "::error::kotlin-results.json missing — the parity job cannot run."
+            exit 1
+          fi
+          echo "kotlin-results.json ($(stat -c%s kotlin-results.json) bytes)"
+
       - uses: actions/upload-artifact@v4
         with:
           name: kotlin-results
           path: kotlin-results.json
+          if-no-files-found: error
 
   parity:
     name: Parity with Python engine

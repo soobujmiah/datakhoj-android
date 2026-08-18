@@ -39,6 +39,9 @@ tasks.register<JavaExec>("conformance") {
     mainClass.set("dev.datakhoj.core.ConformanceMain")
     classpath = sourceSets["test"].runtimeClasspath
     args("${rootDir}/spec/conformance/cases")
+    // JavaExec defaults to the SUBPROJECT dir, so kotlin-results.json landed in
+    // core/ while CI's parity job looked for it at the repo root. Pin it.
+    workingDir = rootDir
 }
 
 tasks.register<JavaExec>("intentTests") {
