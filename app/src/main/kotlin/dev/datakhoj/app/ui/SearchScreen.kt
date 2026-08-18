@@ -21,6 +21,12 @@ package dev.datakhoj.app.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -65,6 +71,9 @@ class SearchViewModel : ViewModel() {
     var busy by mutableStateOf(false)
     var error by mutableStateOf<String?>(null)
     var mergedCount by mutableStateOf(0)
+    /** How many results to fetch. Providers page until they reach this. */
+    var limit by mutableStateOf(50)
+    var lastQuery by mutableStateOf("")
 
     private val http = AndroidHttpClient()
     private val smart = SmartSearch(IntentParser(), ProviderRegistry, llm = null)
@@ -78,18 +87,32 @@ class SearchViewModel : ViewModel() {
         }
     }
 
-    fun run() {
+    fun setLimit(n: Int) {
+        limit = n
+        if (lastQuery.isNotBlank()) run()
+    }
+
+    /** Fetch the next tranche without discarding what is already on screen. */
+    fun loadMore() {
+        if (busy) return
+        limit += 50
+        run(keepExisting = true)
+    }
+
+    fun run(keepExisting: Boolean = false) {
         val q = query.trim()
         if (q.isBlank() || busy) return
-        busy = true; error = null; results = emptyList(); mergedCount = 0
+        lastQuery = q
+        busy = true; error = null; mergedCount = 0
+        if (!keepExisting) results = emptyList()
         viewModelScope.launch {
             runCatching {
-                val plan = smart.plan(q)
+                val plan = smart.plan(q, limitOverride = limit)
                 planText = plan.intent.describe()
                 reasoning = plan.intent.reasoning
                 detectedKind = plan.intent.kind
 
-                val (_, hits) = smart.search(q, http) { p, t ->
+                val (_, hits) = smart.search(q, http, limitOverride = limit) { p, t ->
                     error = "${p.displayName}: ${t.message}"
                 }
                 val before = hits.size
@@ -113,9 +136,17 @@ fun SearchScreen(vm: SearchViewModel = viewModel()) {
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
+        // Consume the full safe-drawing area: status bar, navigation bar,
+        // gesture handle and display cutout. Without this, enableEdgeToEdge()
+        // draws the header underneath the status bar.
+        contentWindowInsets = WindowInsets.safeDrawing,
         topBar = {
-            Column(Modifier.padding(horizontal = 20.dp)) {
-                Spacer(Modifier.height(20.dp))
+            Column(
+                Modifier
+                    .windowInsetsPadding(WindowInsets.statusBars)
+                    .padding(horizontal = 20.dp)
+            ) {
+                Spacer(Modifier.height(12.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         Icons.Default.Search, null,
@@ -163,6 +194,39 @@ fun SearchScreen(vm: SearchViewModel = viewModel()) {
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
             )
 
+            // ---- how many results ----
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    "Results:", fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                listOf(50, 100, 250, 500).forEach { n ->
+                    val on = vm.limit == n
+                    Box(
+                        Modifier
+                            .background(
+                                if (on) MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.surfaceVariant,
+                                RoundedCornerShape(999.dp),
+                            )
+                            .clickable(enabled = !vm.busy) { vm.setLimit(n) }
+                            .padding(horizontal = 12.dp, vertical = 6.dp),
+                    ) {
+                        Text(
+                            "$n", fontSize = 12.sp, fontWeight = FontWeight.Medium,
+                            color = if (on) MaterialTheme.colorScheme.onPrimary
+                                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            }
+
             // ---- what it understood ----
             vm.planText?.let { plan ->
                 Spacer(Modifier.height(12.dp))
@@ -204,8 +268,16 @@ fun SearchScreen(vm: SearchViewModel = viewModel()) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                         Spacer(Modifier.height(12.dp))
-                        Text("Searching…", fontSize = 13.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(
+                            "Searching… fetching up to ${vm.limit} results",
+                            fontSize = 13.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            "Multiple pages — this can take a few seconds",
+                            fontSize = 11.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                     }
                 }
 
@@ -248,6 +320,17 @@ fun SearchScreen(vm: SearchViewModel = viewModel()) {
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         items(vm.results) { r -> ResultCard(r) { uri.openUri(r.url) } }
+                        item {
+                            Spacer(Modifier.height(8.dp))
+                            OutlinedButton(
+                                onClick = { vm.loadMore() },
+                                enabled = !vm.busy,
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                Text(if (vm.busy) "Loading…" else "Load 50 more")
+                            }
+                            Spacer(Modifier.height(8.dp))
+                        }
                     }
                 }
 

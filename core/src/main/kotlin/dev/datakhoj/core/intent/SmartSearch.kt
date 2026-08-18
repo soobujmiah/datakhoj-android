@@ -75,7 +75,11 @@ class SmartSearch(
     }
 
     /** Parse and choose sources without executing anything. */
-    suspend fun plan(input: String, enabled: Set<String>? = null): Plan {
+    suspend fun plan(
+        input: String,
+        enabled: Set<String>? = null,
+        limitOverride: Int? = null,
+    ): Plan {
         var intent = parser.parse(input)
 
         // Consult an LLM only when the deterministic parser is unsure and the
@@ -85,7 +89,7 @@ class SmartSearch(
             intent = runCatching { assist.refine(input, intent) }.getOrDefault(intent)
         }
 
-        val query = intent.toQuery()
+        val query = intent.toQuery(limitOverride)
         val exact = registry.candidates(query, enabled)
             .filter { intent.kind in it.kinds }
             .sortedByDescending { it.trust.ordinal }
@@ -103,13 +107,14 @@ class SmartSearch(
         input: String,
         http: HttpClient,
         enabled: Set<String>? = null,
+        limitOverride: Int? = null,
         onError: ((SearchProvider, Throwable) -> Unit)? = null,
     ): Pair<Plan, List<SearchResult>> {
-        val plan = plan(input, enabled)
+        val plan = plan(input, enabled, limitOverride)
         val use = plan.providers.ifEmpty { plan.fallbackProviders }
         if (use.isEmpty()) return plan to emptyList()
 
-        val query = plan.intent.toQuery()
+        val query = plan.intent.toQuery(limitOverride)
         val out = mutableListOf<SearchResult>()
         for (p in use) {
             try {
@@ -146,11 +151,20 @@ class SmartSearch(
     }
 }
 
-/** Bridge an intent into the provider-layer query object. */
-fun QueryIntent.toQuery(): SearchQuery = SearchQuery(
+/** Default when the query names no count. Providers page until they reach it. */
+const val DEFAULT_RESULT_LIMIT = 50
+
+/**
+ * Bridge an intent into the provider-layer query object.
+ *
+ * A count parsed from the query ("500 mp3") always wins over the default, and
+ * nothing here caps it — providers page until they satisfy the limit or run
+ * out of results.
+ */
+fun QueryIntent.toQuery(limitOverride: Int? = null): SearchQuery = SearchQuery(
     text = subject.ifBlank { raw },
     kinds = setOf(kind),
-    limit = count ?: 50,
+    limit = limitOverride ?: count ?: DEFAULT_RESULT_LIMIT,
     filters = buildMap {
         site?.let { put("site", it) }
         if (formats.isNotEmpty()) put("formats", formats.joinToString(","))

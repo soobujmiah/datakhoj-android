@@ -33,6 +33,9 @@ jobs:
       - name: Export + persistence contract tests
         run: ./gradlew :core:contractTests
 
+      - name: Provider pagination tests
+        run: ./gradlew :core:paginationTests
+
       - name: Cross-engine conformance
         run: ./gradlew :core:conformance
 

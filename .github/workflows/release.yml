@@ -67,6 +67,9 @@ jobs:
       - name: Export + persistence contract tests
         run: ./gradlew :core:contractTests
 
+      - name: Provider pagination tests
+        run: ./gradlew :core:paginationTests
+
       # ---- signing material, restored just in time ----
       - name: Restore keystore
         if: ${{ github.event.inputs.build_type != 'debug' }}

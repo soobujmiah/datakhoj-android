@@ -24,7 +24,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
@@ -76,8 +75,13 @@ fun DataKhojTheme(dark: Boolean = isSystemInDarkTheme(), content: @Composable ()
     if (!view.isInEditMode) {
         SideEffect {
             val w = (view.context as Activity).window
-            w.statusBarColor = colors.background.toArgb()
-            WindowCompat.getInsetsController(w, view).isAppearanceLightStatusBars = !dark
+            // Do NOT set statusBarColor here. enableEdgeToEdge() already makes
+            // the bars transparent; assigning a colour fights it and produced
+            // the overlap. Only the icon tint is ours to control.
+            WindowCompat.getInsetsController(w, view).apply {
+                isAppearanceLightStatusBars = !dark
+                isAppearanceLightNavigationBars = !dark
+            }
         }
     }
     MaterialTheme(colorScheme = colors, typography = Typography(), content = content)
