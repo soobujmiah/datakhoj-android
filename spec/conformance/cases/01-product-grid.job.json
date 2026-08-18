@@ -1,0 +1,6 @@
+{"spec_version":1,"name":"Product grid","source":{"url":"https://shop.example.com/list/"},
+ "extract":{"container":".product-card","fields":[
+   {"name":"title","selector":".product-title"},
+   {"name":"price","selector":".price","type":"currency"},
+   {"name":"link","selector":"a@href","type":"url"},
+   {"name":"image","selector":"img@src","type":"url"}]}}

@@ -1,0 +1,5 @@
+{"spec_version":1,"name":"Required fields","source":{"url":"https://q.example.com/"},
+ "extract":{"container":".q","fields":[
+   {"name":"text","selector":".t"},
+   {"name":"author","selector":".a","required":true},
+   {"name":"tags","selector":".tag@textall","type":"list","default":"none"}]}}

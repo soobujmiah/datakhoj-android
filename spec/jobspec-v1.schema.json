@@ -1,0 +1,161 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://datakhoj.dev/spec/jobspec-v1.schema.json",
+  "title": "DataKhoj JobSpec v1",
+  "description": "Language-neutral definition of a scrape job. Both the Python engine (Linux/Termux) and the Kotlin engine (Android) MUST implement this identically. A .dkjob file is an instance of this schema, and is portable between platforms.",
+  "type": "object",
+  "required": ["spec_version", "name", "source", "extract"],
+  "additionalProperties": false,
+
+  "properties": {
+    "spec_version": {
+      "type": "integer",
+      "const": 1,
+      "description": "Bump only for breaking changes. Engines must refuse a spec_version they do not implement."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120,
+      "description": "Human label, e.g. 'Competitor prices'."
+    },
+    "description": { "type": "string", "maxLength": 2000 },
+
+    "source": {
+      "type": "object",
+      "required": ["url"],
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Starting URL."
+        },
+        "method": { "enum": ["GET", "POST"], "default": "GET" },
+        "headers": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "body": { "type": "string" },
+        "render": {
+          "enum": ["none", "js"],
+          "default": "none",
+          "description": "'js' requires a rendering backend: Playwright on Linux, WebView on Android. Engines without one MUST fail with a clear error, never silently return unrendered HTML."
+        },
+        "render_wait_ms": { "type": "integer", "minimum": 0, "maximum": 60000, "default": 1500 }
+      }
+    },
+
+    "extract": {
+      "type": "object",
+      "required": ["fields"],
+      "additionalProperties": false,
+      "properties": {
+        "container": {
+          "type": "string",
+          "description": "CSS selector for the repeating element. One output row per match. Omit for single-record pages (whole document = one row)."
+        },
+        "fields": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/field" }
+        }
+      }
+    },
+
+    "pagination": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": ["none", "next_link", "url_pattern", "load_more", "infinite_scroll"],
+          "default": "none"
+        },
+        "next_selector": { "type": "string", "description": "For mode=next_link." },
+        "url_pattern": {
+          "type": "string",
+          "description": "For mode=url_pattern. Must contain {page}, e.g. 'https://x.com/list?p={page}'."
+        },
+        "start_page": { "type": "integer", "default": 1 },
+        "max_pages": { "type": "integer", "minimum": 1, "maximum": 10000, "default": 10 }
+      }
+    },
+
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_rows": { "type": "integer", "minimum": 1, "default": 1000 },
+        "delay_ms": { "type": "integer", "minimum": 0, "default": 1500, "description": "Minimum gap between requests to one host." },
+        "concurrency": { "type": "integer", "minimum": 1, "maximum": 16, "default": 3 },
+        "timeout_ms": { "type": "integer", "minimum": 1000, "default": 30000 },
+        "retry_max": { "type": "integer", "minimum": 0, "default": 3 }
+      }
+    },
+
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "respect_robots": {
+          "type": "boolean",
+          "default": true,
+          "description": "When true the engine MUST fetch and honour robots.txt, including Crawl-delay."
+        },
+        "user_agent": { "type": "string", "default": "DataKhoj" }
+      }
+    },
+
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "formats": {
+          "type": "array",
+          "items": { "enum": ["csv", "json", "xlsx", "yaml", "md", "html"] },
+          "default": ["csv"]
+        },
+        "dedup_keys": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Field names forming the uniqueness key. Empty = dedup on the full row hash."
+        }
+      }
+    }
+  },
+
+  "definitions": {
+    "field": {
+      "type": "object",
+      "required": ["name", "selector"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+          "description": "Output column name. Identifier-safe so it survives CSV/XLSX/SQL round-trips."
+        },
+        "selector": {
+          "type": "string",
+          "description": "CSS selector relative to the container. Supports an '@attr' suffix: 'a@href', 'img@src', '.tag@textall', '@html', default '@text'."
+        },
+        "type": {
+          "enum": ["text", "number", "currency", "date", "url", "email", "phone", "boolean", "list", "image"],
+          "default": "text",
+          "description": "Coercion applied after extraction. Engines MUST agree on the normalised output for each type."
+        },
+        "required": {
+          "type": "boolean",
+          "default": false,
+          "description": "If true, rows where this field is empty are dropped."
+        },
+        "default": { "type": "string", "description": "Substituted when extraction yields empty." },
+        "regex": {
+          "type": "string",
+          "description": "Post-processor. If it has a capture group, group 1 becomes the value; otherwise the whole match."
+        },
+        "trim": { "type": "boolean", "default": true }
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{"spec_version":1,"name":"Detail page","source":{"url":"https://acme.example.com/about"},
+ "extract":{"fields":[
+   {"name":"company","selector":"h1.headline"},
+   {"name":"bio","selector":".bio"},
+   {"name":"founded","selector":".founded","type":"number","regex":"(\\d{4})"},
+   {"name":"website","selector":"a.site@href","type":"url"}]}}

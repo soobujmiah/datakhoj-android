@@ -1,0 +1,2 @@
+{"spec_version":1,"name":"No match","source":{"url":"https://example.com/"},
+ "extract":{"container":".does-not-exist","fields":[{"name":"x","selector":".y"}]}}
