@@ -38,6 +38,10 @@ import org.junit.runner.RunWith
  * actual Room codegen, and actual transaction behaviour.
  *
  * If Room and InMemory ever disagree, this fails the build.
+ *
+ * Note the explicit `: Unit` on each test: `runBlocking` returns its last
+ * expression, and JUnit rejects a test method that does not return void with
+ * a confusing "Failed to instantiate test runner class".
  */
 @RunWith(AndroidJUnit4::class)
 class RoomContractTest {
@@ -52,7 +56,7 @@ class RoomContractTest {
     }
 
     @Test
-    fun roomSatisfiesTheRepositoryContract() = runBlocking {
+    fun roomSatisfiesTheRepositoryContract(): Unit = runBlocking {
         val report = RepositoryContract { freshStore() }.run("RoomStore")
         val failures = report.results.filter { !it.passed }
         failures.forEach { println("FAIL  ${it.name}  ${it.detail}") }
@@ -65,7 +69,7 @@ class RoomContractTest {
     }
 
     @Test
-    fun dataSurvivesReopeningTheDatabase() = runBlocking {
+    fun dataSurvivesReopeningTheDatabase(): Unit = runBlocking {
         val ctx = InstrumentationRegistry.getInstrumentation().targetContext
         val name = "persistence-check-${System.currentTimeMillis()}.db"
         ctx.deleteDatabase(name)
@@ -97,7 +101,7 @@ class RoomContractTest {
     }
 
     @Test
-    fun cascadeDeleteRemovesOrphanedRecords() = runBlocking {
+    fun cascadeDeleteRemovesOrphanedRecords(): Unit = runBlocking {
         val store = freshStore()
         val d = dev.datakhoj.core.dataset.Dataset.of(
             "cascade", "C", (1..10).map { mapOf("a" to "$it") })
@@ -110,7 +114,7 @@ class RoomContractTest {
     }
 
     @Test
-    fun largeDatasetPagesWithoutLoadingEverything() = runBlocking {
+    fun largeDatasetPagesWithoutLoadingEverything(): Unit = runBlocking {
         val store = freshStore()
         val big = dev.datakhoj.core.dataset.Dataset.of(
             "big", "Big", (1..5_000).map { mapOf("n" to "$it", "v" to "value $it") })
