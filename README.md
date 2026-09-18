@@ -36,19 +36,19 @@ Everything marked ✅ was compiled and executed, not just written —
 
 ---
 
-## Companion repository
+## History: the Python companion engine
 
-| Repo | Role |
-|---|---|
-| [`soobujmiah/datakhoj`](https://github.com/soobujmiah/datakhoj) | Python engine — Linux, Termux, servers, cron. **Still maintained.** |
-| `soobujmiah/datakhoj-android` (this) | Kotlin engine + Android app |
+DataKhoj started as two engines implementing one contract — a Python CLI
+(`soobujmiah/datakhoj`) for Linux/Termux and this Kotlin engine for Android,
+kept byte-identical by a shared conformance corpus. The Python repository was
+deleted in September 2026; this repository is the continuing engine and holds
+the normative **JobSpec v1** schema and the shared corpus (`spec/`).
 
-Both implement **JobSpec v1** and share `spec/conformance/`. A `.dkjob` file
-built by tapping on the phone runs unchanged on a Linux box, and the SQLite
-database is portable in both directions.
-
-Neither engine may merge a change that breaks the shared corpus — that is the
-mechanism keeping them identical. See [`docs/PARITY.md`](docs/PARITY.md).
+A `.dkjob` file is a portable plain-JSON job definition, and the SQLite
+database this engine writes is a portable file. The corpus still runs in CI on
+every push as the extraction regression suite. See
+[`docs/PARITY.md`](docs/PARITY.md) for how the two-engine parity mechanism
+worked and how to extend the corpus.
 
 ---
 

@@ -1,8 +1,7 @@
 # ADB-first device testing
 
-This repository is Android/Android-adjacent, so real-device testing follows the canonical
-control hierarchy defined in `soobujmiah/skb` → `standards/agent-device-testing.md`
-(the "Agent Device Testing Standard"):
+This repository is Android/Android-adjacent, so real-device testing follows a strict
+control hierarchy:
 
 1. **ADB-first.** Work against the real, directly connected device through `adb`, not an
    emulator or UI-driven simulation.
@@ -11,7 +10,7 @@ control hierarchy defined in `soobujmiah/skb` → `standards/agent-device-testin
 3. **Raw `adb shell input`** for deterministic taps/text/keys when no better interface exists.
 4. **UIAutomator** only as a last resort, for interactions with genuinely no other control path.
 
-Performance principles (from the same standard): batch independent ADB commands, wait on an
+Performance principles: batch independent ADB commands, wait on an
 observable readiness condition (`pidof`, `am start -W`, a specific logcat pattern, a `dumpsys`
 state) instead of an arbitrary `sleep`, filter logs to this app's own tags, and prefer
 programmatic state checks over screenshots wherever the same fact is available without one.

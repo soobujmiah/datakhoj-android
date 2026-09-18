@@ -1,5 +1,12 @@
 # Engine Parity
 
+> **Status (2026-09-19):** the Python engine repository (`soobujmiah/datakhoj`)
+> was deleted. This document records the two-engine mechanism as it operated,
+> and the parts that still apply here: the corpus in `spec/conformance/` is now
+> this repository's extraction regression suite, the schema in
+> `spec/jobspec-v1.schema.json` is normative, and the add-the-case-first
+> workflow below is still how extraction behaviour changes.
+
 Two engines implement DataKhoj:
 
 | Engine | Repo | Stack |

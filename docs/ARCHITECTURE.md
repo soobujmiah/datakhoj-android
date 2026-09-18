@@ -81,9 +81,10 @@ without re-scraping (§5).
 
 ## Parity
 
-`:core` extraction must stay byte-identical to the Python engine at
-`soobujmiah/datakhoj`. Enforced by `spec/conformance/` running on both sides;
-CI fails on divergence. See [`PARITY.md`](PARITY.md).
+`:core` extraction was kept byte-identical to the Python engine (repository
+now deleted) by the shared `spec/conformance/` corpus. The corpus stays in
+this repository and CI still runs it on every push — it is now the regression
+suite for extraction semantics. See [`PARITY.md`](PARITY.md).
 
 The layers added in Phase 1 (dataset, transform, dedup, export) are **Android-side
 only** and do not affect parity — extraction output is unchanged, which is why
