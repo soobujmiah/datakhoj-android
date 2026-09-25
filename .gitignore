@@ -19,3 +19,4 @@ keystore/
 keystore.properties
 local.properties
 dist/
+__pycache__/
