@@ -74,14 +74,17 @@ jobs:
 
       - name: Clone datakhoj Python engine for parity
         if: steps.build.outcome == 'success'
+        id: parity_clone
+        continue-on-error: true
         run: |
-          git clone --depth 1 https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/soobujmiah/datakhoj.git /tmp/datakhoj
+          git ls-remote --exit-code https://github.com/soobujmiah/datakhoj.git HEAD >/dev/null 2>&1 || exit 1
+          git clone --depth 1 https://github.com/soobujmiah/datakhoj.git /tmp/datakhoj
           (cd /tmp/datakhoj && pip install -e .)
 
       - name: Parity test (Python vs Kotlin engine)
         id: test_step
         continue-on-error: true
-        if: steps.build.outcome == 'success'
+        if: steps.build.outcome == 'success' && steps.parity_clone.outcome == 'success'
         run: |
           (cd /tmp/datakhoj && python - <<'PY'
           import json, pathlib
