@@ -1,0 +1,30 @@
+schema_version: 1
+project_id: datakhoj-android
+repository: soobujmiah/datakhoj-android
+generated_at: '2026-09-25T14:55:54Z'
+generated_by: tools/repo_knowledge init
+version: v0.1.0-17-gb30f22f
+head:
+  commit: b30f22f8237fc8b4744ec4bb1e458d401951cb0b
+  branch: chore/deterministic-repo-knowledge-sync
+  committed_at: '2026-09-21T03:14:39Z'
+phases:
+  source: not_configured
+  completed: []
+  active: null
+  next: null
+build:
+  status: unknown
+  run_id: null
+  at: null
+test:
+  status: unknown
+  run_id: null
+  at: null
+  summary: null
+last_successful_build: null
+last_failed_build: null
+sync:
+  status: pending
+  last_synced_at: '2026-09-25T14:55:54Z'
+  source: local
