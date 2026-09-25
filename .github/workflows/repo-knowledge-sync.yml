@@ -44,6 +44,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
       - name: Install dependencies
         run: pip install --quiet pyyaml
 
@@ -53,11 +58,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: 'gradle'
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
 
       - name: Core engine tests (build + test signal)
         id: build
@@ -117,7 +117,7 @@ jobs:
 
       - name: Verify .repo/ against schemas
         if: always()
-        run: python3 -m tools/repo_knowledge verify
+        run: python3 -m tools.repo_knowledge verify
 
       - name: Commit updated .repo/ state
         if: always() && github.event_name == 'push'
