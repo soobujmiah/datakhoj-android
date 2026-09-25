@@ -75,7 +75,7 @@ jobs:
       - name: Clone datakhoj Python engine for parity
         if: steps.build.outcome == 'success'
         run: |
-          git clone --depth 1 https://github.com/soobujmiah/datakhoj.git /tmp/datakhoj
+          git clone --depth 1 https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/soobujmiah/datakhoj.git /tmp/datakhoj
           (cd /tmp/datakhoj && pip install -e .)
 
       - name: Parity test (Python vs Kotlin engine)
