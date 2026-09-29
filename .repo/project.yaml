@@ -1,13 +1,13 @@
 schema_version: 1
 project_id: datakhoj-android
 repository: soobujmiah/datakhoj-android
-generated_at: '2026-09-29T17:17:40Z'
+generated_at: '2026-09-29T22:44:23Z'
 generated_by: tools/repo_knowledge collect
-version: v0.1.0-22-g96b8147
+version: v0.1.0-27-g13e52ac
 head:
-  commit: 96b81478cc82815919d4b2c728048583e5b4e07a
+  commit: 13e52ac22105f387068fba06422537e924851581
   branch: main
-  committed_at: '2026-09-29T17:16:50Z'
+  committed_at: '2026-09-29T22:36:29Z'
 phases:
   source: not_configured
   completed: []
@@ -15,33 +15,33 @@ phases:
   next: null
 build:
   status: passed
-  run_id: '36603818706'
-  commit: 96b81478cc82815919d4b2c728048583e5b4e07a
+  run_id: '36640573441'
+  commit: 13e52ac22105f387068fba06422537e924851581
   run_attempt: '1'
-  at: '2026-09-29T17:17:40Z'
+  at: '2026-09-29T22:44:23Z'
   timestamp_source: observed
   workflow_name: Repo Knowledge Sync
   event_type: push
   actor: soobujmiah
-  run_url: https://github.com/soobujmiah/datakhoj-android/actions/runs/36603818706
+  run_url: https://github.com/soobujmiah/datakhoj-android/actions/runs/36640573441
 test:
   status: passed
-  run_id: '36603818706'
-  commit: 96b81478cc82815919d4b2c728048583e5b4e07a
+  run_id: '36640573441'
+  commit: 13e52ac22105f387068fba06422537e924851581
   run_attempt: '1'
-  at: '2026-09-29T17:17:40Z'
+  at: '2026-09-29T22:44:23Z'
   timestamp_source: observed
   workflow_name: Repo Knowledge Sync
   event_type: push
   actor: soobujmiah
-  run_url: https://github.com/soobujmiah/datakhoj-android/actions/runs/36603818706
+  run_url: https://github.com/soobujmiah/datakhoj-android/actions/runs/36640573441
   summary: core engine JVM tests and Kotlin conformance (no cross-engine parity claim)
 last_successful_build:
-  commit: 96b81478cc82815919d4b2c728048583e5b4e07a
-  at: '2026-09-29T17:17:40Z'
-  run_id: '36603818706'
+  commit: 13e52ac22105f387068fba06422537e924851581
+  at: '2026-09-29T22:44:23Z'
+  run_id: '36640573441'
 last_failed_build: null
 sync:
   status: ok
-  last_synced_at: '2026-09-29T17:17:40Z'
+  last_synced_at: '2026-09-29T22:44:23Z'
   source: ci

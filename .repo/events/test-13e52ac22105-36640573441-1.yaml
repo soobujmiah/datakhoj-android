@@ -1,0 +1,13 @@
+event_id: test-13e52ac22105-36640573441-1
+repository: soobujmiah/datakhoj-android
+commit: 13e52ac22105f387068fba06422537e924851581
+kind: test
+occurred_at: '2026-09-29T22:44:23Z'
+run_id: '36640573441'
+run_attempt: '1'
+status: passed
+summary: core engine JVM tests and Kotlin conformance (no cross-engine parity claim)
+workflow_name: Repo Knowledge Sync
+event_type: push
+actor: soobujmiah
+run_url: https://github.com/soobujmiah/datakhoj-android/actions/runs/36640573441

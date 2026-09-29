@@ -1,0 +1,8 @@
+event_id: commit-13e52ac22105-de2c7126ff768962
+repository: soobujmiah/datakhoj-android
+commit: 13e52ac22105f387068fba06422537e924851581
+kind: commit
+occurred_at: '2026-09-29T22:36:29Z'
+status: completed
+summary: Declare the repository's canonical type and add the documentation scaffold
+  (migration waves 2/3)
