@@ -2,15 +2,15 @@
 # datakhoj-android -- deterministic status
 
 - Repository: `soobujmiah/datakhoj-android`
-- Generated at: 2026-09-26T21:45:19Z (by `tools/repo_knowledge collect`)
-- Version: `v0.1.0-20-gbd697da`
-- Head: `bd697dade61ad8261817d10e51efc36ee5a595c1` on `main` (2026-09-26T21:44:39Z)
+- Generated at: 2026-09-29T17:17:40Z (by `tools/repo_knowledge collect`)
+- Version: `v0.1.0-22-g96b8147`
+- Head: `96b81478cc82815919d4b2c728048583e5b4e07a` on `main` (2026-09-29T17:16:50Z)
 
 ## Build / test
 
-- Build: **passed** (run `36273972299`)
+- Build: **passed** (run `36603818706`)
 - Test: **passed** -- core engine JVM tests and Kotlin conformance (no cross-engine parity claim)
-- Last successful build: `bd697dade61ad8261817d10e51efc36ee5a595c1` at 2026-09-26T21:45:19Z
+- Last successful build: `96b81478cc82815919d4b2c728048583e5b4e07a` at 2026-09-29T17:17:40Z
 
 ## Phases
 - Not configured (no `.repo/phases.yaml`).
@@ -19,4 +19,4 @@
 
 - Status: ok
 - Source: ci
-- Last synced at: 2026-09-26T21:45:19Z
+- Last synced at: 2026-09-29T17:17:40Z

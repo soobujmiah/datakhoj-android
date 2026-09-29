@@ -1,0 +1,8 @@
+event_id: commit-96b81478cc82-b1858ef7d115ce52
+repository: soobujmiah/datakhoj-android
+commit: 96b81478cc82815919d4b2c728048583e5b4e07a
+kind: commit
+occurred_at: '2026-09-29T17:16:50Z'
+status: completed
+summary: 'feat(repo-knowledge): upgrade vendored tooling, schemas, and final-run sync
+  contract'
